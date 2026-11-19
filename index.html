@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="ca" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagrama de Moeller, Orbitals 3D i Excepcions | IES Algarb</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- KaTeX per a notació científica i quàntica -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+
+  <style>
+    :root {
+      --bg-app: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border: #cbd5e1;
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --danger: #e11d48;
+      --danger-hover: #be123c;
+      --warning: #d97706;
+      --warning-bg: rgba(245, 158, 11, 0.14);
+      --s-color: #0284c7;
+      --p-color: #e11d48;
+      --d-color: #10b981;
+      --f-color: #f59e0b;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] {
+      --bg-app: #0b1120;
+      --bg-card: #1e293b;
+      --bg-subtle: #0f172a;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --accent: #38bdf8;
+      --accent-hover: #7dd3fc;
+      --danger: #fb7185;
+      --danger-hover: #fda4af;
+      --warning: #fbbf24;
+      --warning-bg: rgba(251, 191, 36, 0.15);
+      --s-color: #38bdf8;
+      --p-color: #fb7185;
+      --d-color: #34d399;
+      --f-color: #fbbf24;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      line-height: 1.5;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    /* Capçalera institucional */
+    header {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .badge-centre {
+      background: var(--accent);
+      color: #0f172a;
+      font-weight: 800;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+    }
+
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Commutador de mode Aufbau (Teòric vs Real) */
+    .mode-switcher {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.2rem;
+    }
+
+    .mode-opt {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-opt.active {
+      background: var(--accent);
+      color: #0f172a;
+    }
+
+    .mode-opt.active.real-mode {
+      background: var(--warning);
+      color: #0f172a;
+    }
+
+    .theme-btn {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 0.42rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .theme-btn:hover { border-color: var(--accent); }
+
+    /* Graella principal */
+    main {
+      max-width: 1460px;
+      margin: 1.2rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 365px 1fr 380px;
+      gap: 1.2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1180px) {
+      main { grid-template-columns: 1fr 1fr; }
+      .panel-info { grid-column: span 2; }
+    }
+    @media (max-width: 780px) {
+      main { grid-template-columns: 1fr; }
+      .panel-info { grid-column: span 1; }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Controls d'electrons */
+    .controls-bar {
+      display: flex;
+      gap: 0.55rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 0.62rem 0.7rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-add { background: var(--accent); color: #0f172a; }
+    .btn-add:hover:not(:disabled) { background: var(--accent-hover); }
+
+    .btn-rem { background: var(--danger); color: #ffffff; }
+    .btn-rem:hover:not(:disabled) { background: var(--danger-hover); }
+
+    .btn-reset {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      flex: 0 0 auto;
+      padding: 0.62rem 0.8rem;
+    }
+
+    /* Salt ràpid a excepcions clau */
+    .quick-jumps {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.85rem;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .jump-chip {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.2rem 0.48rem;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .jump-chip:hover { border-color: var(--warning); color: var(--warning); }
+
+    /* Diagrama de Moeller */
+    .moeller-grid {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.42rem;
+      background: var(--bg-subtle);
+      padding: 0.72rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .moeller-row {
+      display: grid;
+      grid-template-columns: 24px repeat(4, 1fr);
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .n-label {
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .subshell-pill {
+      padding: 0.36rem 0.22rem;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 0.81rem;
+      font-weight: 700;
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .subshell-pill.empty { opacity: 0.45; }
+    .subshell-pill.partial { border-style: dashed; }
+    .subshell-pill.active-target {
+      transform: scale(1.06);
+      box-shadow: 0 0 0 2px var(--text-main);
+      z-index: 2;
+    }
+    .subshell-pill.exception-altered {
+      box-shadow: 0 0 0 2px var(--warning);
+    }
+
+    .subshell-pill[data-type="s"] { border-color: var(--s-color); color: var(--s-color); }
+    .subshell-pill[data-type="p"] { border-color: var(--p-color); color: var(--p-color); }
+    .subshell-pill[data-type="d"] { border-color: var(--d-color); color: var(--d-color); }
+    .subshell-pill[data-type="f"] { border-color: var(--f-color); color: var(--f-color); }
+
+    .subshell-pill.full[data-type="s"] { background: var(--s-color); color: #0f172a; }
+    .subshell-pill.full[data-type="p"] { background: var(--p-color); color: #ffffff; }
+    .subshell-pill.full[data-type="d"] { background: var(--d-color); color: #0f172a; }
+    .subshell-pill.full[data-type="f"] { background: var(--f-color); color: #0f172a; }
+
+    /* Visor 3D Canvas */
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 475px;
+      background: radial-gradient(circle at center, var(--bg-subtle) 0%, var(--bg-app) 100%);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: grab;
+    }
+    .canvas-wrapper:active { cursor: grabbing; }
+    canvas { width: 100%; height: 100%; display: block; }
+
+    .canvas-overlay-top {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .view-toggles {
+      pointer-events: auto;
+      display: flex;
+      gap: 0.35rem;
+      background: var(--bg-card);
+      padding: 0.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .chip-toggle {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.28rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chip-toggle.active {
+      background: var(--accent);
+      color: #0f172a;
+    }
+
+    .legend-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0.9rem;
+      margin-top: 0.75rem;
+      font-size: 0.79rem;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.35rem; font-weight: 600; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+
+    /* Caixes d'orbitals (Hund & Pauli) */
+    .boxes-container {
+      margin-top: 0.85rem;
+      padding: 0.72rem;
+      background: var(--bg-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .boxes-header {
+      font-size: 0.81rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .orbital-boxes {
+      display: flex;
+      gap: 0.42rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .o-box-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    .o-box {
+      width: 42px;
+      height: 35px;
+      border: 2px solid var(--border);
+      background: var(--bg-card);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .o-box.highlight {
+      border-color: #facc15;
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.45);
+      transform: translateY(-2px);
+    }
+    .o-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
+
+    /* Panell d'informació i KaTeX */
+    .element-banner {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.85rem;
+      background: var(--bg-subtle);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 0.9rem;
+    }
+
+    .element-symbol {
+      width: 62px;
+      height: 62px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .element-symbol .z-num { font-size: 0.75rem; line-height: 1; }
+    .element-symbol .sym { font-size: 1.55rem; line-height: 1.1; }
+
+    /* Alerta d'excepció d'Aufbau */
+    .exception-banner {
+      display: none;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning);
+      border-radius: 8px;
+      padding: 0.7rem 0.8rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.82rem;
+    }
+    .exception-banner.visible { display: block; }
+    .exception-title {
+      font-weight: 800;
+      color: var(--warning);
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .config-box {
+      background: var(--bg-subtle);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-bottom: 0.85rem;
+      overflow-x: auto;
+    }
+    .config-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .quantum-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.45rem;
+      margin-top: 0.4rem;
+    }
+    .q-cell {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem;
+      text-align: center;
+    }
+    .q-cell .q-name { font-size: 0.72rem; color: var(--text-muted); }
+    .q-cell .q-val { font-weight: 700; font-size: 0.95rem; margin-top: 0.1rem; }
+
+    .didactic-note {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 0.75rem;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="badge-centre">IES Algarb</span>
+    <h1>Diagrama de Moeller i Orbitals Atòmics 3D</h1>
+  </div>
+
+  <div class="header-actions">
+    <div class="mode-switcher" role="group" aria-label="Mode de configuració electrònica">
+      <button class="mode-opt active" id="modeTheoretical">Aufbau teòric</button>
+      <button class="mode-opt" id="modeExceptions">Excepcions reals</button>
+    </div>
+
+    <button class="theme-btn" id="themeToggle" aria-label="Canvia el tema">
+      <span id="themeIcon">☀️</span> <span id="themeText">Mode lluminós</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- COLUMNA 1: Controls i Diagrama de Moeller -->
+  <section class="card">
+    <div class="card-title">
+      <span>1. Regla de les Diagonals</span>
+      <span id="electronCounter">0 / 118 e⁻</span>
+    </div>
+
+    <div class="controls-bar">
+      <button class="btn btn-add" id="btnAdd">➕ Afegir electrò</button>
+      <button class="btn btn-rem" id="btnRem" disabled>➖ Retirar electrò</button>
+      <button class="btn btn-reset" id="btnReset" title="Reiniciar àtom">↺</button>
+    </div>
+
+    <div class="quick-jumps">
+      <span>Exemples clau:</span>
+      <button class="jump-chip" data-z="24">Cr (24)</button>
+      <button class="jump-chip" data-z="29">Cu (29)</button>
+      <button class="jump-chip" data-z="42">Mo (42)</button>
+      <button class="jump-chip" data-z="46">Pd (46)</button>
+      <button class="jump-chip" data-z="47">Ag (47)</button>
+      <button class="jump-chip" data-z="79">Au (79)</button>
+    </div>
+
+    <div class="moeller-grid" id="moellerGrid"></div>
+
+    <div class="boxes-container">
+      <div class="boxes-header">
+        <span>Subnivell en curs (Regla de Hund)</span>
+        <span id="activeSubshellLabel">—</span>
+      </div>
+      <div class="orbital-boxes" id="orbitalBoxes">
+        <span style="font-size:0.82rem; color:var(--text-muted);">Afegeix un electrò per iniciar l'ompliment.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLUMNA 2: Visor 3D de Formes, Dimensions i Fletxes d'Espín -->
+  <section class="card">
+    <div class="card-title">
+      <span>2. Geometria Espacial (<span id="katexRadiusTitle"></span>) i Espín</span>
+    </div>
+
+    <div class="canvas-wrapper" id="canvasWrap">
+      <div class="canvas-overlay-top">
+        <span>Arrossega per rotar 3D</span>
+        <div class="view-toggles">
+          <button class="chip-toggle active" id="toggleAllLayers">Tots els subnivells</button>
+          <button class="chip-toggle" id="toggleValenceOnly">Només subnivell en curs</button>
+        </div>
+      </div>
+      <canvas id="orbitalCanvas"></canvas>
+    </div>
+
+    <div class="legend-bar">
+      <div class="legend-item"><span class="dot" style="background:var(--s-color)"></span> s (esfera)</div>
+      <div class="legend-item"><span class="dot" style="background:var(--p-color)"></span> p (6 lòbuls)</div>
+      <div class="legend-item"><span class="dot" style="background:var(--d-color)"></span> d (5 orientacions)</div>
+      <div class="legend-item"><span class="dot" style="background:var(--f-color)"></span> f (7 orientacions)</div>
+      <div class="legend-item"><span class="dot" style="background:#facc15"></span> Nou e⁻ / Espín</div>
+    </div>
+  </section>
+
+  <!-- COLUMNA 3: Anàlisi Quàntica i Configuració -->
+  <section class="card panel-info">
+    <div class="card-title">
+      <span>3. Estat Quàntic i Configuració</span>
+    </div>
+
+    <div class="element-banner">
+      <div class="element-symbol">
+        <span class="z-num" id="elZ">Z = 0</span>
+        <span class="sym" id="elSym">—</span>
+      </div>
+      <div>
+        <h2 id="elName" style="font-size:1.15rem;">Buit quàntic</h2>
+        <p id="elGroup" style="font-size:0.82rem; color:var(--text-muted);">Sense electrons al núvol atòmic</p>
+      </div>
+    </div>
+
+    <!-- Avís dinàmic d'excepció d'Aufbau -->
+    <div class="exception-banner" id="exceptionBanner">
+      <div class="exception-title">⚡ Excepció experimental a la regla d'Aufbau</div>
+      <div id="exceptionDetail"></div>
+    </div>
+
+    <div class="config-box">
+      <div class="config-label">
+        <span>Configuració electrònica</span>
+        <span id="configModeBadge" style="color:var(--accent);">TEÒRICA</span>
+      </div>
+      <div id="katexFullConfig" style="min-height: 28px;"></div>
+    </div>
+
+    <div class="config-box">
+      <div class="config-label">Nombres quàntics de l'electró diferencial</div>
+      <div class="quantum-grid">
+        <div class="q-cell"><div class="q-name" id="lblN"></div><div class="q-val" id="valN">—</div></div>
+        <div class="q-cell"><div class="q-name" id="lblL"></div><div class="q-val" id="valL">—</div></div>
+        <div class="q-cell"><div class="q-name" id="lblM"></div><div class="q-val" id="valM">—</div></div>
+        <div class="q-cell"><div class="q-name" id="lblS"></div><div class="q-val" id="valS">—</div></div>
+      </div>
+    </div>
+
+    <div class="didactic-note">
+      <strong>Guia didàctica:</strong> Commuta entre <em>«Aufbau teòric»</em> i <em>«Excepcions reals»</em> en elements com el Crom (<span id="inlineCr"></span>) o el Coure (<span id="inlineCu"></span>). Observaràs com l'electró promociona de l'orbital <span id="inline4s"></span> al <span id="inline3d"></span>, reduint la densitat de l'esfera exterior i completant (o semicompletant) els cinc orbitals <span id="inline3d2"></span> al model 3D.
+    </div>
+  </section>
+</main>
+
+<script>
+  // --- 1. FUNCIONS SEGURES DE KATEX ---
+  function mInline(el, tex) {
+    if (!el || !window.katex) return;
+    katex.render(tex, el, { throwOnError: false, displayMode: false });
+  }
+  function mBlock(el, tex) {
+    if (!el || !window.katex) return;
+    katex.render(tex, el, { throwOnError: false, displayMode: true });
+  }
+
+  // --- 2. DADES CIENTÍFIQUES ---
+  const AUFBAU_ORDER = [
+    { n: 1, l: 0, type: 's', cap: 2 },
+    { n: 2, l: 0, type: 's', cap: 2 },
+    { n: 2, l: 1, type: 'p', cap: 6 },
+    { n: 3, l: 0, type: 's', cap: 2 },
+    { n: 3, l: 1, type: 'p', cap: 6 },
+    { n: 4, l: 0, type: 's', cap: 2 },
+    { n: 3, l: 2, type: 'd', cap: 10 },
+    { n: 4, l: 1, type: 'p', cap: 6 },
+    { n: 5, l: 0, type: 's', cap: 2 },
+    { n: 4, l: 2, type: 'd', cap: 10 },
+    { n: 5, l: 1, type: 'p', cap: 6 },
+    { n: 6, l: 0, type: 's', cap: 2 },
+    { n: 4, l: 3, type: 'f', cap: 14 },
+    { n: 5, l: 2, type: 'd', cap: 10 },
+    { n: 6, l: 1, type: 'p', cap: 6 },
+    { n: 7, l: 0, type: 's', cap: 2 },
+    { n: 5, l: 3, type: 'f', cap: 14 },
+    { n: 6, l: 2, type: 'd', cap: 10 },
+    { n: 7, l: 1, type: 'p', cap: 6 }
+  ];
+
+  // Excepcions experimentals reals respecte a l'ordre estricte d'Aufbau
+  // Cada entrada indica els ajustos d'electrons { '4s': -1, '3d': +1 }, el subnivell diferencial real i l'explicació
+  const AUFBAU_EXCEPTIONS = {
+    24: {
+      changes: { '4s': -1, '3d': 1 },
+      focusSub: '3d',
+      texReason: '4s^2\\,3d^4 \\rightarrow 4s^1\\,3d^5',
+      desc: 'Estabilitat addicional en assolir dos subnivells semicomplets (un electró desaparellat a cada orbital).'
+    },
+    29: {
+      changes: { '4s': -1, '3d': 1 },
+      focusSub: '3d',
+      texReason: '4s^2\\,3d^9 \\rightarrow 4s^1\\,3d^{10}',
+      desc: 'Un electró promociona del 4s al 3d per completar totalment els 5 orbitals d (configuració tancada d¹⁰).'
+    },
+    41: {
+      changes: { '5s': -1, '4d': 1 },
+      focusSub: '4d',
+      texReason: '5s^2\\,4d^3 \\rightarrow 5s^1\\,4d^4',
+      desc: 'La baixa diferència energètica entre 5s i 4d afavoreix la promoció d\'un electró per minimitzar repulsions.'
+    },
+    42: {
+      changes: { '5s': -1, '4d': 1 },
+      focusSub: '4d',
+      texReason: '5s^2\\,4d^4 \\rightarrow 5s^1\\,4d^5',
+      desc: 'Estabilitat per subnivells semicomplets 5s¹ i 4d⁵.'
+    },
+    44: {
+      changes: { '5s': -1, '4d': 1 },
+      focusSub: '4d',
+      texReason: '5s^2\\,4d^6 \\rightarrow 5s^1\\,4d^7',
+      desc: 'Promoció d\'un electró 5s cap al subnivell 4d per reduir l\'energia d\'aparellament.'
+    },
+    45: {
+      changes: { '5s': -1, '4d': 1 },
+      focusSub: '4d',
+      texReason: '5s^2\\,4d^7 \\rightarrow 5s^1\\,4d^8',
+      desc: 'Promoció d\'un electró 5s cap a l\'orbital 4d.'
+    },
+    46: {
+      changes: { '5s': -2, '4d': 2 },
+      focusSub: '4d',
+      texReason: '5s^2\\,4d^8 \\rightarrow 5s^0\\,4d^{10}',
+      desc: 'Cas únic: els dos electrons del 5s promocionen al 4d, deixant el 5s buit i el 4d completament ple.'
+    },
+    47: {
+      changes: { '5s': -1, '4d': 1 },
+      focusSub: '4d',
+      texReason: '5s^2\\,4d^9 \\rightarrow 5s^1\\,4d^{10}',
+      desc: 'Subnivell 4d complet (d¹⁰) amb un sol electró a la capa exterior 5s¹.'
+    },
+    57: {
+      changes: { '4f': -1, '5d': 1 },
+      focusSub: '5d',
+      texReason: '6s^2\\,4f^1 \\rightarrow 6s^2\\,5d^1',
+      desc: 'En el Lantà, l\'orbital 5d té lleugerament menys energia que el 4f abans de començar la sèrie lantànida.'
+    },
+    58: {
+      changes: { '4f': -1, '5d': 1 },
+      focusSub: '4f',
+      texReason: '6s^2\\,4f^2 \\rightarrow 6s^2\\,4f^1\\,5d^1',
+      desc: 'Coexistència d\'un electró al 4f i un al 5d per proximitat energètica.'
+    },
+    64: {
+      changes: { '4f': -1, '5d': 1 },
+      focusSub: '5d',
+      texReason: '6s^2\\,4f^8 \\rightarrow 6s^2\\,4f^7\\,5d^1',
+      desc: 'El Gadolini manté el subnivell 4f semicomplet (4f⁷) enviant el vuitè electró al 5d¹.'
+    },
+    78: {
+      changes: { '6s': -1, '5d': 1 },
+      focusSub: '5d',
+      texReason: '6s^2\\,4f^{14}\\,5d^8 \\rightarrow 6s^1\\,4f^{14}\\,5d^9',
+      desc: 'Efectes relativistes estabilitzen el subnivell 5d a costa d\'un electró 6s.'
+    },
+    79: {
+      changes: { '6s': -1, '5d': 1 },
+      focusSub: '5d',
+      texReason: '6s^2\\,4f^{14}\\,5d^9 \\rightarrow 6s^1\\,4f^{14}\\,5d^{10}',
+      desc: 'Subnivell 5d completament ple (5d¹⁰) amb un sol electró de valència 6s¹.'
+    },
+    89: {
+      changes: { '5f': -1, '6d': 1 },
+      focusSub: '6d',
+      texReason: '7s^2\\,5f^1 \\rightarrow 7s^2\\,6d^1',
+      desc: 'L\'Actini ocupa primer l\'orbital 6d abans que el 5f.'
+    },
+    90: {
+      changes: { '5f': -2, '6d': 2 },
+      focusSub: '6d',
+      texReason: '7s^2\\,5f^2 \\rightarrow 7s^2\\,6d^2',
+      desc: 'El Tori situa els dos electrons de valència al subnivell 6d.'
+    },
+    91: {
+      changes: { '5f': -1, '6d': 1 },
+      focusSub: '5f',
+      texReason: '7s^2\\,5f^3 \\rightarrow 7s^2\\,5f^2\\,6d^1',
+      desc: 'Ocupació simultània dels subnivells 5f i 6d.'
+    },
+    92: {
+      changes: { '5f': -1, '6d': 1 },
+      focusSub: '5f',
+      texReason: '7s^2\\,5f^4 \\rightarrow 7s^2\\,5f^3\\,6d^1',
+      desc: 'L\'Urani manté un electró al 6d¹ i tres al 5f³.'
+    },
+    93: {
+      changes: { '5f': -1, '6d': 1 },
+      focusSub: '5f',
+      texReason: '7s^2\\,5f^5 \\rightarrow 7s^2\\,5f^4\\,6d^1',
+      desc: 'Promoció parcial 5f → 6d per proximitat energètica.'
+    },
+    96: {
+      changes: { '5f': -1, '6d': 1 },
+      focusSub: '6d',
+      texReason: '7s^2\\,5f^8 \\rightarrow 7s^2\\,5f^7\\,6d^1',
+      desc: 'El Curi conserva la configuració semicompleta 5f⁷ enviant un electró al 6d¹.'
+    },
+    103: {
+      changes: { '6d': -1, '7p': 1 },
+      focusSub: '7p',
+      texReason: '7s^2\\,5f^{14}\\,6d^1 \\rightarrow 7s^2\\,5f^{14}\\,7p^1',
+      desc: 'Els efectes relativistes estabilitzen l\'orbital 7p₁/₂ per davant del 6d en el Lawrenci.'
+    }
+  };
+
+  const ELEMENTS = [
+    null,
+    ["H","Hidrogen"],["He","Heli"],["Li","Liti"],["Be","Beril·li"],["B","Bor"],["C","Carboni"],["N","Nitrogen"],["O","Oxigen"],["F","Fluor"],["Ne","Neó"],
+    ["Na","Sodi"],["Mg","Magnesi"],["Al","Alumini"],["Si","Silici"],["P","Fòsfor"],["S","Sofre"],["Cl","Clor"],["Ar","Argó"],
+    ["K","Potassi"],["Ca","Calci"],["Sc","Escandi"],["Ti","Titani"],["V","Vanadi"],["Cr","Crom"],["Mn","Manganès"],["Fe","Ferro"],["Co","Cobalt"],["Ni","Níquel"],["Cu","Coure"],["Zn","Zinc"],
+    ["Ga","Gal·li"],["Ge","Germani"],["As","Arsènic"],["Se","Seleni"],["Br","Brom"],["Kr","Criptó"],
+    ["Rb","Rubidi"],["Sr","Estronci"],["Y","Itri"],["Zr","Zirconi"],["Nb","Niobi"],["Mo","Molibdè"],["Tc","Tecneci"],["Ru","Ruteni"],["Rh","Rodi"],["Pd","Pal·ladi"],["Ag","Plata"],["Cd","Cadmi"],
+    ["In","Indi"],["Sn","Estany"],["Sb","Antimoni"],["Te","Tel·luri"],["I","Iode"],["Xe","Xenó"],
+    ["Cs","Cesi"],["Ba","Bari"],["La","Lantà"],["Ce","Ceri"],["Pr","Praseodimi"],["Nd","Neodimi"],["Pm","Prometi"],["Sm","Samari"],["Eu","Europi"],["Gd","Gadolini"],["Tb","Terbi"],["Dy","Disprosi"],["Ho","Holmi"],["Er","Erbi"],["Tm","Tuli"],["Yb","Iterbi"],["Lu","Luteci"],
+    ["Hf","Hafni"],["Ta","Tàntal"],["W","Wolframi"],["Re","Reni"],["Os","Osmi"],["Ir","Iridi"],["Pt","Platí"],["Au","Or"],["Hg","Mercuri"],
+    ["Tl","Tal·li"],["Pb","Plom"],["Bi","Bismut"],["Po","Poloni"],["At","Àstat"],["Rn","Radó"],
+    ["Fr","Franci"],["Ra","Radi"],["Ac","Actini"],["Th","Tori"],["Pa","Protoactini"],["U","Urani"],["Np","Neptuni"],["Pu","Plutoni"],["Am","Americi"],["Cm","Curi"],["Bk","Berkeli"],["Cf","Californi"],["Es","Einsteini"],["Fm","Fermi"],["Md","Mendelevi"],["No","Nobeli"],["Lr","Lawrenci"],
+    ["Rf","Rutherfordi"],["Db","Dubni"],["Sg","Seaborgi"],["Bh","Bohri"],["Hs","Hassi"],["Mt","Meitneri"],["Ds","Darmstadti"],["Rg","Roentgeni"],["Cn","Copernici"],
+    ["Nh","Nihoni"],["Fl","Flerovi"],["Mc","Moscovi"],["Lv","Livermori"],["Ts","Tennes"],["Og","Oganessó"]
+  ];
+
+  const ORBITAL_NAMES = {
+    s: ['s'],
+    p: ['p_x', 'p_y', 'p_z'],
+    d: ['d_{xy}', 'd_{yz}', 'd_{z^2}', 'd_{xz}', 'd_{x^2-y^2}'],
+    f: ['f_{-3}', 'f_{-2}', 'f_{-1}', 'f_0', 'f_{+1}', 'f_{+2}', 'f_{+3}']
+  };
+
+  let totalElectrons = 0;
+  let useExceptions = false; // false = Aufbau teòric, true = Excepcions reals
+  let showCurrentOnly = false;
+  let pulseTimestamp = 0;
+
+  // --- 3. CONSTRUCCIÓ DEL DIAGRAMA DE MOELLER ---
+  const moellerGrid = document.getElementById('moellerGrid');
+  const pillMap = {};
+
+  function buildMoellerUI() {
+    moellerGrid.innerHTML = '';
+    const types = ['s', 'p', 'd', 'f'];
+    for (let n = 1; n <= 7; n++) {
+      const row = document.createElement('div');
+      row.className = 'moeller-row';
+      const nLbl = document.createElement('div');
+      nLbl.className = 'n-label';
+      nLbl.textContent = `n=${n}`;
+      row.appendChild(nLbl);
+
+      types.forEach(t => {
+        const exists = AUFBAU_ORDER.some(item => item.n === n && item.type === t);
+        if (exists) {
+          const pill = document.createElement('div');
+          pill.className = 'subshell-pill empty';
+          pill.dataset.type = t;
+          pill.id = `pill-${n}${t}`;
+          pill.textContent = `${n}${t}⁰`;
+          row.appendChild(pill);
+          pillMap[`${n}${t}`] = pill;
+        } else {
+          row.appendChild(document.createElement('div'));
+        }
+      });
+      moellerGrid.appendChild(row);
+    }
+  }
+
+  // --- 4. CÀLCUL DE L'ESTAT ELECTRÒNIC (TEÒRIC VS EXCEPCIONS) ---
+  function getElectronState(z, applyExceptions) {
+    let rem = z;
+    const filled = [];
+    let lastSubshell = null;
+    let lastElectronsInSub = 0;
+
+    // 1. Ompliment base d'Aufbau
+    for (const sub of AUFBAU_ORDER) {
+      if (rem <= 0) {
+        filled.push({ ...sub, count: 0, altered: false });
+        continue;
+      }
+      const take = Math.min(rem, sub.cap);
+      filled.push({ ...sub, count: take, altered: false });
+      lastSubshell = sub;
+      lastElectronsInSub = take;
+      rem -= take;
+    }
+
+    // 2. Aplicar excepció si el mode està actiu i l'element Z en té
+    const exceptionData = (applyExceptions && AUFBAU_EXCEPTIONS[z]) ? AUFBAU_EXCEPTIONS[z] : null;
+    if (exceptionData) {
+      for (const [key, delta] of Object.entries(exceptionData.changes)) {
+        const target = filled.find(s => `${s.n}${s.type}` === key);
+        if (target) {
+          target.count += delta;
+          target.altered = true;
+        }
+      }
+      const focusObj = filled.find(s => `${s.n}${s.type}` === exceptionData.focusSub);
+      if (focusObj && focusObj.count > 0) {
+        lastSubshell = focusObj;
+        lastElectronsInSub = focusObj.count;
+      }
+    }
+
+    // 3. Nombres quàntics de l'últim electró (Hund + Pauli)
+    let quantum = null;
+    if (lastSubshell && lastElectronsInSub > 0) {
+      const numBoxes = lastSubshell.cap / 2;
+      const boxIndex = (lastElectronsInSub - 1) % numBoxes;
+      const ml = -lastSubshell.l + boxIndex;
+      const ms = lastElectronsInSub <= numBoxes ? '+1/2' : '-1/2';
+      quantum = {
+        n: lastSubshell.n,
+        l: lastSubshell.l,
+        ml: ml > 0 ? `+${ml}` : `${ml}`,
+        ms: ms,
+        boxIndex,
+        numBoxes,
+        countInSub: lastElectronsInSub,
+        subLabel: `${lastSubshell.n}${lastSubshell.type}`,
+        type: lastSubshell.type
+      };
+    }
+
+    return { filled, quantum, exceptionData };
+  }
+
+  // --- 5. ACTUALITZACIÓ DE LA INTERFÍCIE ---
+  function updateUI(triggerPulse = false) {
+    if (triggerPulse) {
+      pulseTimestamp = performance.now();
+    }
+
+    document.getElementById('electronCounter').textContent = `${totalElectrons} / 118 e⁻`;
+    document.getElementById('btnAdd').disabled = totalElectrons >= 118;
+    document.getElementById('btnRem').disabled = totalElectrons <= 0;
+
+    const { filled, quantum, exceptionData } = getElectronState(totalElectrons, useExceptions);
+
+    // Actualitzar píndoles de Moeller
+    const superscripts = ['⁰','¹','²','³','⁴','⁵','⁶','⁷','⁸','⁹','¹⁰','¹¹','¹²','¹³','¹⁴'];
+    filled.forEach(sub => {
+      const pill = pillMap[`${sub.n}${sub.type}`];
+      if (!pill) return;
+      pill.textContent = `${sub.n}${sub.type}${superscripts[sub.count]}`;
+      pill.classList.remove('empty', 'partial', 'full', 'active-target', 'exception-altered');
+      if (sub.count === 0) pill.classList.add('empty');
+      else if (sub.count < sub.cap) pill.classList.add('partial');
+      else pill.classList.add('full');
+
+      if (sub.altered) {
+        pill.classList.add('exception-altered');
+      }
+      if (quantum && quantum.subLabel === `${sub.n}${sub.type}`) {
+        pill.classList.add('active-target');
+      }
+    });
+
+    // Caixes d'orbitals (Hund i Pauli)
+    const boxesDiv = document.getElementById('orbitalBoxes');
+    const subLabelEl = document.getElementById('activeSubshellLabel');
+    boxesDiv.innerHTML = '';
+
+    if (!quantum) {
+      subLabelEl.textContent = '—';
+      boxesDiv.innerHTML = '<span style="font-size:0.82rem; color:var(--text-muted);">Afegeix un electrò per iniciar l\'ompliment.</span>';
+    } else {
+      subLabelEl.textContent = `Subnivell ${quantum.subLabel} (${quantum.countInSub}/${quantum.numBoxes * 2} e⁻)`;
+      const names = ORBITAL_NAMES[quantum.type];
+      for (let i = 0; i < quantum.numBoxes; i++) {
+        const group = document.createElement('div');
+        group.className = 'o-box-group';
+
+        const box = document.createElement('div');
+        box.className = 'o-box' + (i === quantum.boxIndex ? ' highlight' : '');
+        const hasUp = quantum.countInSub > i;
+        const hasDown = quantum.countInSub > i + quantum.numBoxes;
+        box.textContent = (hasUp ? '↑' : '') + (hasDown ? '↓' : '');
+
+        const lbl = document.createElement('div');
+        lbl.className = 'o-label';
+        mInline(lbl, names[i]);
+
+        group.appendChild(box);
+        group.appendChild(lbl);
+        boxesDiv.appendChild(group);
+      }
+    }
+
+    // Banner d'excepció d'Aufbau
+    const exBanner = document.getElementById('exceptionBanner');
+    const exDetail = document.getElementById('exceptionDetail');
+    if (exceptionData) {
+      exBanner.classList.add('visible');
+      exDetail.innerHTML = `<div style="margin-bottom:4px;" id="exTexFormula"></div><div>${exceptionData.desc}</div>`;
+      mInline(document.getElementById('exTexFormula'), exceptionData.texReason);
+    } else {
+      exBanner.classList.remove('visible');
+    }
+
+    // Badge del mode de configuració
+    const modeBadge = document.getElementById('configModeBadge');
+    if (useExceptions) {
+      modeBadge.textContent = exceptionData ? 'EXCEPCIÓ REAL APLICADA' : 'MODE REAL (SENSE EXCEPCIÓ)';
+      modeBadge.style.color = exceptionData ? 'var(--warning)' : 'var(--accent)';
+    } else {
+      modeBadge.textContent = AUFBAU_EXCEPTIONS[totalElectrons]
+        ? 'TEÒRICA (TÉ EXCEPCIÓ REAL)'
+        : 'AUFBAU TEÒRICA';
+      modeBadge.style.color = 'var(--accent)';
+    }
+
+    // Element i Configuració
+    document.getElementById('elZ').textContent = `Z = ${totalElectrons}`;
+    if (totalElectrons === 0) {
+      document.getElementById('elSym').textContent = '—';
+      document.getElementById('elName').textContent = 'Buit quàntic';
+      document.getElementById('elGroup').textContent = 'Sense electrons al núvol atòmic';
+      mInline(document.getElementById('katexFullConfig'), '\\text{Cap orbital ocupat}');
+      ['valN','valL','valM','valS'].forEach(id => document.getElementById(id).textContent = '—');
+    } else {
+      const [sym, name] = ELEMENTS[totalElectrons];
+      document.getElementById('elSym').textContent = sym;
+      document.getElementById('elName').textContent = name;
+      document.getElementById('elGroup').textContent = `Àtom neutre amb ${totalElectrons} protons i ${totalElectrons} electrons`;
+
+      const texParts = filled
+        .filter(s => s.count > 0)
+        .map(s => s.altered ? `\\mathbf{${s.n}${s.type}^{${s.count}}}` : `${s.n}${s.type}^{${s.count}}`);
+      mInline(document.getElementById('katexFullConfig'), texParts.join('\\;'));
+
+      document.getElementById('valN').textContent = quantum.n;
+      document.getElementById('valL').textContent = quantum.l;
+      document.getElementById('valM').textContent = quantum.ml;
+      document.getElementById('valS').textContent = quantum.ms;
+    }
+
+    currentFilledState = filled;
+    currentQuantum = quantum;
+  }
+
+  // --- 6. MOTOR VISUAL 3D EN CANVAS ---
+  const canvas = document.getElementById('orbitalCanvas');
+  const ctx = canvas.getContext('2d');
+  let rotX = 0.35;
+  let rotY = -0.55;
+  let isDragging = false;
+  let lastMouse = { x: 0, y: 0 };
+  let currentFilledState = [];
+  let currentQuantum = null;
+
+  function resizeCanvas() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resizeCanvas);
+
+  canvas.addEventListener('mousedown', e => { isDragging = true; lastMouse = { x: e.clientX, y: e.clientY }; });
+  window.addEventListener('mouseup', () => isDragging = false);
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    rotY += (e.clientX - lastMouse.x) * 0.008;
+    rotX += (e.clientY - lastMouse.y) * 0.008;
+    lastMouse = { x: e.clientX, y: e.clientY };
+  });
+
+  canvas.addEventListener('touchstart', e => {
+    isDragging = true;
+    lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, { passive: true });
+  window.addEventListener('touchend', () => isDragging = false);
+  canvas.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    rotY += (e.touches[0].clientX - lastMouse.x) * 0.008;
+    rotX += (e.touches[0].clientY - lastMouse.y) * 0.008;
+    lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, { passive: true });
+
+  function project3D(x, y, z, cx, cy) {
+    const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+    const x1 = x * cosY - z * sinY;
+    const z1 = z * cosY + x * sinY;
+    const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+    const y2 = y * cosX - z1 * sinX;
+    const z2 = z1 * cosX + y * sinX;
+
+    const fov = 520;
+    const scale = fov / (fov + z2);
+    return { x: cx + x1 * scale, y: cy + y2 * scale, z: z2, scale };
+  }
+
+  function drawLobe(cx, cy, vx, vy, vz, length, width, colorRGBA, strokeColor, pulseIntensity = 0) {
+    const tip = project3D(vx * length, vy * length, vz * length, cx, cy);
+    const mid = project3D(vx * length * 0.58, vy * length * 0.58, vz * length * 0.58, cx, cy);
+
+    const dx = tip.x - cx;
+    const dy = tip.y - cy;
+    const projLen = Math.hypot(dx, dy);
+    if (projLen < 2) return;
+
+    const angle = Math.atan2(dy, dx);
+    const rx = projLen * 0.5 * (1 + pulseIntensity * 0.08);
+    const ry = width * mid.scale * (1 + pulseIntensity * 0.12);
+
+    ctx.save();
+    ctx.translate((cx + tip.x) / 2, (cy + tip.y) / 2);
+    ctx.rotate(angle);
+
+    const grad = ctx.createRadialGradient(0, 0, ry * 0.1, 0, 0, Math.max(rx, ry));
+    if (pulseIntensity > 0.05) {
+      grad.addColorStop(0, `rgba(250, 204, 21, ${0.45 + pulseIntensity * 0.45})`);
+      grad.addColorStop(0.65, colorRGBA.replace('ALPHA', `${0.5 + pulseIntensity * 0.3}`));
+      grad.addColorStop(1, colorRGBA.replace('ALPHA', '0.12'));
+    } else {
+      grad.addColorStop(0, colorRGBA.replace('ALPHA', '0.52'));
+      grad.addColorStop(1, colorRGBA.replace('ALPHA', '0.08'));
+    }
+
+    ctx.fillStyle = grad;
+    ctx.strokeStyle = pulseIntensity > 0.05 ? `rgba(250, 204, 21, ${0.6 + pulseIntensity * 0.4})` : strokeColor;
+    ctx.lineWidth = pulseIntensity > 0.05 ? 2.4 : 1.1;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawSpinArrowsAt(px, py, hasUp, hasDown, isNewlyAddedBox, pulseIntensity) {
+    ctx.save();
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+    const badgeW = hasDown ? 26 : 16;
+    const badgeH = 22;
+    ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.82)' : 'rgba(255, 255, 255, 0.88)';
+    ctx.strokeStyle = isNewlyAddedBox && pulseIntensity > 0.05
+      ? '#facc15'
+      : (isDark ? 'rgba(148, 163, 184, 0.55)' : 'rgba(71, 85, 105, 0.45)');
+    ctx.lineWidth = isNewlyAddedBox && pulseIntensity > 0.05 ? 1.8 : 1;
+
+    ctx.beginPath();
+    ctx.roundRect(px - badgeW / 2, py - badgeH / 2, badgeW, badgeH, 5);
+    ctx.fill();
+    ctx.stroke();
+
+    function singleArrow(x, y, dirUp, highlight) {
+      const len = 6.5;
+      ctx.strokeStyle = highlight ? '#facc15' : (dirUp ? '#38bdf8' : '#fb7185');
+      if (!isDark && !highlight) {
+        ctx.strokeStyle = dirUp ? '#0284c7' : '#e11d48';
+      }
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      if (dirUp) {
+        ctx.moveTo(x, y + len);
+        ctx.lineTo(x, y - len);
+        ctx.moveTo(x - 3, y - len + 3.5);
+        ctx.lineTo(x, y - len);
+        ctx.lineTo(x + 3, y - len + 3.5);
+      } else {
+        ctx.moveTo(x, y - len);
+        ctx.lineTo(x, y + len);
+        ctx.moveTo(x - 3, y + len - 3.5);
+        ctx.lineTo(x, y + len);
+        ctx.lineTo(x + 3, y + len - 3.5);
+      }
+      ctx.stroke();
+    }
+
+    if (hasUp && !hasDown) {
+      singleArrow(px, py, true, isNewlyAddedBox);
+    } else if (hasUp && hasDown) {
+      singleArrow(px - 4.5, py, true, false);
+      singleArrow(px + 4.5, py, false, isNewlyAddedBox);
+    }
+
+    ctx.restore();
+  }
+
+  function render3D(now) {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    const cx = w / 2;
+    const cy = h / 2;
+
+    ctx.clearRect(0, 0, w, h);
+
+    const elapsed = now - pulseTimestamp;
+    const pulseDuration = 1300;
+    let pulseIntensity = 0;
+    if (pulseTimestamp > 0 && elapsed < pulseDuration) {
+      const progress = elapsed / pulseDuration;
+      pulseIntensity = Math.abs(Math.sin(progress * Math.PI * 2.5)) * (1 - progress);
+    }
+
+    // Eixos cartesians X, Y, Z
+    const axisLen = 180;
+    const axes = [
+      { v: [1, 0, 0], lbl: 'X' },
+      { v: [0, -1, 0], lbl: 'Y' },
+      { v: [0, 0, 1], lbl: 'Z' }
+    ];
+    ctx.font = '600 11px system-ui';
+    axes.forEach(ax => {
+      const p1 = project3D(-ax.v[0]*axisLen, -ax.v[1]*axisLen, -ax.v[2]*axisLen, cx, cy);
+      const p2 = project3D(ax.v[0]*axisLen, ax.v[1]*axisLen, ax.v[2]*axisLen, cx, cy);
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(148, 163, 184, 0.75)';
+      ctx.fillText(ax.lbl, p2.x + 4, p2.y + 4);
+    });
+
+    // Només subnivells amb count > 0 (si Pd deixa 5s^0, desapareix l'esfera 5s)
+    const activeLayers = currentFilledState.filter(s => s.count > 0);
+    const layersToDraw = (showCurrentOnly && activeLayers.length > 0)
+      ? [activeLayers.find(s => currentQuantum && `${s.n}${s.type}` === currentQuantum.subLabel) || activeLayers[activeLayers.length - 1]]
+      : activeLayers;
+
+    const pendingSpinBadges = [];
+
+    [...layersToDraw].reverse().forEach(sub => {
+      const isCurrent = currentQuantum && currentQuantum.subLabel === `${sub.n}${sub.type}`;
+      const baseRadius = 25 + (sub.n - 1) * 23;
+      const alphaBoost = isCurrent ? 1.25 : 0.62;
+
+      if (sub.type === 's') {
+        const activePulse = isCurrent ? pulseIntensity : 0;
+        const rDraw = baseRadius * (1 + activePulse * 0.06);
+
+        // Si s té només 1 electró (excepció Cr, Cu, Ag, Au), es dibuixa amb traç discontinu i menor opacitat
+        const isHalfFilledS = sub.count === 1;
+
+        const grad = ctx.createRadialGradient(cx - rDraw*0.25, cy - rDraw*0.25, rDraw*0.1, cx, cy, rDraw);
+        if (activePulse > 0.05) {
+          grad.addColorStop(0, `rgba(250, 204, 21, ${0.35 + activePulse * 0.35})`);
+          grad.addColorStop(0.75, `rgba(56, 189, 248, ${0.28 * alphaBoost})`);
+          grad.addColorStop(1, `rgba(250, 204, 21, ${0.5 + activePulse * 0.4})`);
+        } else {
+          const densityFactor = isHalfFilledS ? 0.65 : 1.0;
+          grad.addColorStop(0, `rgba(56, 189, 248, ${0.28 * alphaBoost * densityFactor})`);
+          grad.addColorStop(0.85, `rgba(2, 132, 199, ${0.14 * alphaBoost * densityFactor})`);
+          grad.addColorStop(1, `rgba(2, 132, 199, ${0.42 * alphaBoost * densityFactor})`);
+        }
+
+        ctx.save();
+        if (isHalfFilledS) ctx.setLineDash([5, 4]);
+        ctx.fillStyle = grad;
+        ctx.strokeStyle = activePulse > 0.05
+          ? `rgba(250, 204, 21, ${0.7 + activePulse * 0.3})`
+          : (sub.altered ? '#fbbf24' : (isCurrent ? '#38bdf8' : 'rgba(56, 189, 248, 0.35)'));
+        ctx.lineWidth = activePulse > 0.05 ? 2.6 : (sub.altered ? 1.7 : (isCurrent ? 1.8 : 1));
+        ctx.beginPath();
+        ctx.arc(cx, cy, rDraw, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.beginPath();
+        for (let a = 0; a <= Math.PI * 2; a += 0.15) {
+          const pt = project3D(Math.cos(a)*rDraw, 0, Math.sin(a)*rDraw, cx, cy);
+          if (a === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y);
+        }
+        ctx.strokeStyle = activePulse > 0.05 ? 'rgba(250, 204, 21, 0.6)' : 'rgba(56, 189, 248, 0.25)';
+        ctx.stroke();
+
+        if (isCurrent) {
+          pendingSpinBadges.push({
+            x: cx,
+            y: cy - rDraw * 0.62,
+            hasUp: sub.count >= 1,
+            hasDown: sub.count >= 2,
+            isNew: true
+          });
+        }
+      }
+
+      if (sub.type === 'p') {
+        const occupiedBoxes = Math.min(3, sub.count);
+        const dirs = [
+          [1, 0, 0],  // px
+          [0, -1, 0], // py
+          [0, 0, 1]   // pz
+        ];
+        const lobeLen = baseRadius * 1.15;
+        const lobeWid = baseRadius * 0.36;
+
+        for (let b = 0; b < occupiedBoxes; b++) {
+          const [vx, vy, vz] = dirs[b];
+          const isTargetBox = isCurrent && currentQuantum.boxIndex === b;
+          const boxPulse = isTargetBox ? pulseIntensity : 0;
+          const stroke = isCurrent ? 'rgba(251, 113, 133, 0.85)' : 'rgba(225, 29, 72, 0.35)';
+
+          drawLobe(cx, cy, vx, vy, vz, lobeLen, lobeWid, 'rgba(244, 63, 94, ALPHA)', stroke, boxPulse);
+          drawLobe(cx, cy, -vx, -vy, -vz, lobeLen, lobeWid, 'rgba(244, 63, 94, ALPHA)', stroke, boxPulse);
+
+          if (isCurrent) {
+            const arrowPos = project3D(vx * lobeLen * 0.65, vy * lobeLen * 0.65, vz * lobeLen * 0.65, cx, cy);
+            pendingSpinBadges.push({
+              x: arrowPos.x,
+              y: arrowPos.y,
+              hasUp: sub.count > b,
+              hasDown: sub.count > b + 3,
+              isNew: isTargetBox
+            });
+          }
+        }
+      }
+
+      if (sub.type === 'd') {
+        const occupiedBoxes = Math.min(5, sub.count);
+        const dDirs = [
+          [[0.7, -0.7, 0], [-0.7, -0.7, 0]], // dxy
+          [[0, -0.7, 0.7], [0, -0.7, -0.7]], // dyz
+          [[0, -1, 0], [0.65, 0, 0.65]],     // dz2
+          [[0.7, 0, 0.7], [-0.7, 0, 0.7]],   // dxz
+          [[1, 0, 0], [0, 0, 1]]             // dx2-y2
+        ];
+        const lobeLen = baseRadius * 1.12;
+        const lobeWid = baseRadius * 0.27;
+        const stroke = isCurrent ? 'rgba(52, 211, 153, 0.85)' : 'rgba(16, 185, 129, 0.3)';
+
+        for (let b = 0; b < occupiedBoxes; b++) {
+          const isTargetBox = isCurrent && currentQuantum.boxIndex === b;
+          const boxPulse = isTargetBox ? pulseIntensity : 0;
+
+          dDirs[b].forEach(([vx, vy, vz]) => {
+            drawLobe(cx, cy, vx, vy, vz, lobeLen, lobeWid, 'rgba(16, 185, 129, ALPHA)', stroke, boxPulse);
+            drawLobe(cx, cy, -vx, -vy, -vz, lobeLen, lobeWid, 'rgba(16, 185, 129, ALPHA)', stroke, boxPulse);
+          });
+
+          if (isCurrent) {
+            const [vx, vy, vz] = dDirs[b][0];
+            const arrowPos = project3D(vx * lobeLen * 0.68, vy * lobeLen * 0.68, vz * lobeLen * 0.68, cx, cy);
+            pendingSpinBadges.push({
+              x: arrowPos.x,
+              y: arrowPos.y,
+              hasUp: sub.count > b,
+              hasDown: sub.count > b + 5,
+              isNew: isTargetBox
+            });
+          }
+        }
+      }
+
+      if (sub.type === 'f') {
+        const occupiedBoxes = Math.min(7, sub.count);
+        const lobeLen = baseRadius * 1.1;
+        const lobeWid = baseRadius * 0.22;
+        const stroke = isCurrent ? 'rgba(251, 191, 36, 0.85)' : 'rgba(245, 158, 11, 0.3)';
+
+        for (let b = 0; b < occupiedBoxes; b++) {
+          const isTargetBox = isCurrent && currentQuantum.boxIndex === b;
+          const boxPulse = isTargetBox ? pulseIntensity : 0;
+
+          const phi = (b / 7) * Math.PI;
+          const v1 = [Math.cos(phi)*0.7, 0.7, Math.sin(phi)*0.7];
+          const v2 = [-Math.sin(phi)*0.7, -0.7, Math.cos(phi)*0.7];
+          [v1, v2].forEach(([vx, vy, vz]) => {
+            drawLobe(cx, cy, vx, vy, vz, lobeLen, lobeWid, 'rgba(245, 158, 11, ALPHA)', stroke, boxPulse);
+            drawLobe(cx, cy, -vx, -vy, -vz, lobeLen, lobeWid, 'rgba(245, 158, 11, ALPHA)', stroke, boxPulse);
+          });
+
+          if (isCurrent) {
+            const arrowPos = project3D(v1[0] * lobeLen * 0.7, v1[1] * lobeLen * 0.7, v1[2] * lobeLen * 0.7, cx, cy);
+            pendingSpinBadges.push({
+              x: arrowPos.x,
+              y: arrowPos.y,
+              hasUp: sub.count > b,
+              hasDown: sub.count > b + 7,
+              isNew: isTargetBox
+            });
+          }
+        }
+      }
+    });
+
+    // Nucli atòmic central
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // Fletxes d'espín del subnivell en curs
+    pendingSpinBadges.forEach(badge => {
+      drawSpinArrowsAt(badge.x, badge.y, badge.hasUp, badge.hasDown, badge.isNew, pulseIntensity);
+    });
+
+    requestAnimationFrame(render3D);
+  }
+
+  // --- 7. ESDEVENIMENTS I INICIALITZACIÓ ---
+  document.getElementById('btnAdd').addEventListener('click', () => {
+    if (totalElectrons < 118) {
+      totalElectrons++;
+      updateUI(true);
+    }
+  });
+
+  document.getElementById('btnRem').addEventListener('click', () => {
+    if (totalElectrons > 0) {
+      totalElectrons--;
+      updateUI(false);
+    }
+  });
+
+  document.getElementById('btnReset').addEventListener('click', () => {
+    totalElectrons = 0;
+    pulseTimestamp = 0;
+    updateUI(false);
+  });
+
+  // Botons de salt ràpid a excepcions clau
+  document.querySelectorAll('.jump-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      totalElectrons = parseInt(chip.dataset.z, 10);
+      updateUI(true);
+    });
+  });
+
+  // Commutador Teòric vs Excepcions reals
+  const btnTheo = document.getElementById('modeTheoretical');
+  const btnEx = document.getElementById('modeExceptions');
+
+  btnTheo.addEventListener('click', () => {
+    useExceptions = false;
+    btnTheo.classList.add('active');
+    btnEx.classList.remove('active', 'real-mode');
+    updateUI(true);
+  });
+
+  btnEx.addEventListener('click', () => {
+    useExceptions = true;
+    btnEx.classList.add('active', 'real-mode');
+    btnTheo.classList.remove('active');
+    updateUI(true);
+  });
+
+  // Commutador de capes 3D
+  document.getElementById('toggleAllLayers').addEventListener('click', (e) => {
+    showCurrentOnly = false;
+    e.target.classList.add('active');
+    document.getElementById('toggleValenceOnly').classList.remove('active');
+  });
+
+  document.getElementById('toggleValenceOnly').addEventListener('click', (e) => {
+    showCurrentOnly = true;
+    e.target.classList.add('active');
+    document.getElementById('toggleAllLayers').classList.remove('active');
+  });
+
+  // Commutador de mode lluminós / fosc
+  const themeBtn = document.getElementById('themeToggle');
+  themeBtn.addEventListener('click', () => {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+    document.getElementById('themeText').textContent = isDark ? 'Mode fosc' : 'Mode lluminós';
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    mInline(document.getElementById('katexRadiusTitle'), 'r \\propto n^2');
+    mInline(document.getElementById('lblN'), 'n');
+    mInline(document.getElementById('lblL'), 'l');
+    mInline(document.getElementById('lblM'), 'm_l');
+    mInline(document.getElementById('lblS'), 'm_s');
+    mInline(document.getElementById('inlineCr'), 'Z=24');
+    mInline(document.getElementById('inlineCu'), 'Z=29');
+    mInline(document.getElementById('inline4s'), '4s');
+    mInline(document.getElementById('inline3d'), '3d');
+    mInline(document.getElementById('inline3d2'), '3d');
+
+    buildMoellerUI();
+    resizeCanvas();
+    updateUI(false);
+    requestAnimationFrame(render3D);
+  });
+</script>
+</body>
+</html>
